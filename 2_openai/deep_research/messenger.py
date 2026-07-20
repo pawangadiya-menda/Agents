@@ -12,8 +12,8 @@ EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
 
 def send_email(subject, text_body, html_body):
     msg = EmailMessage()
-    msg["From"] = EMAIL_ADDRESS
-    msg["To"] = EMAIL_ADDRESS
+    msg["From"] = "pawangdiya@gmail.com"
+    msg["To"] = "pawangdiya@gmail.com"
     msg["Subject"] = subject
     msg.set_content(text_body)
     msg.add_alternative(html_body, subtype="html")
