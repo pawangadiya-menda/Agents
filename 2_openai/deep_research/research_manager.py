@@ -35,14 +35,17 @@ class ResearchManager:
 
             yield "Sending email..."
 
-            send_email(
-                recipient=recipient_email,
-                subject=email_content.subject,
-                text_body=email_content.text_body,
-                html_body=email_content.html_body,
-            )
-
-            yield "Email sent successfully."
+            try:
+                await asyncio.to_thread(
+                    send_email,
+                    recipient=recipient_email,
+                    subject=email_content.subject,
+                    text_body=email_content.text_body,
+                    html_body=email_content.html_body,
+                )
+                yield "Email sent successfully."
+            except Exception as e:
+                yield f"Email could not be sent ({e}). Here is your report:"
 
             yield report.markdown_report
 
