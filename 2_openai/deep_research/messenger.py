@@ -3,22 +3,36 @@ import requests
 import os
 import smtplib
 from email.message import EmailMessage
-load_dotenv(override=True)
 
+load_dotenv(override=True)
 
 EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
 EMAIL_SMTP_SERVER = os.getenv("EMAIL_SMTP_SERVER")
 EMAIL_APP_PASSWORD = os.getenv("EMAIL_APP_PASSWORD")
 
-def send_email(subject, text_body, html_body):
+
+def send_email(
+    recipient: str,
+    subject: str,
+    text_body: str,
+    html_body: str,
+):
     msg = EmailMessage()
-    msg["From"] = "pawangdiya@gmail.com"
-    msg["To"] = "pawangdiya@gmail.com"
+
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = recipient
     msg["Subject"] = subject
+
     msg.set_content(text_body)
     msg.add_alternative(html_body, subtype="html")
 
-    with smtplib.SMTP(EMAIL_SMTP_SERVER, 587) as server:
+    print("=" * 50)
+    print("EMAIL_ADDRESS =", EMAIL_ADDRESS)
+    print("EMAIL_SMTP_SERVER =", EMAIL_SMTP_SERVER)
+    print("EMAIL_APP_PASSWORD exists =", EMAIL_APP_PASSWORD is not None)
+    print("=" * 50)
+
+    with smtplib.SMTP(EMAIL_SMTP_SERVER, 587, timeout=10) as server:
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
         server.send_message(msg)
@@ -28,8 +42,14 @@ pushover_user = os.getenv("PUSHOVER_USER")
 pushover_token = os.getenv("PUSHOVER_TOKEN")
 pushover_url = "https://api.pushover.net/1/messages.json"
 
+
 def push(message):
     print(f"Push: {message}")
-    payload = {"user": pushover_user, "token": pushover_token, "message": message}
-    requests.post(pushover_url, data=payload)
 
+    payload = {
+        "user": pushover_user,
+        "token": pushover_token,
+        "message": message,
+    }
+
+    requests.post(pushover_url, data=payload)
