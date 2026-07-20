@@ -43,11 +43,11 @@ class ResearchManager:
                     text_body=email_content.text_body,
                     html_body=email_content.html_body,
                 )
-                yield "Email sent successfully."
+                email_status = f"✅ Report emailed to {recipient_email}"
             except Exception as e:
-                yield f"Email could not be sent ({e}). Here is your report:"
+                email_status = f"⚠️ Email could not be sent: {e}"
 
-            yield report.markdown_report
+            yield f"**{email_status}**\n\n---\n\n{report.markdown_report}"
 
     async def plan_searches(self, query: str) -> WebSearchPlan:
         result = await Runner.run(
